@@ -6,6 +6,9 @@ import { Container, Form, FormGroup, Input, Button, ButtonGroup } from 'reactstr
 const languages = [
   { code: 'en', name: 'Anglais' },
   { code: 'fr', name: 'Français' },
+  { code: 'de', name: 'Allemand' },
+  { code: 'es', name: 'Espagnol' },
+  { code: 'pt', name: 'Portugais' }
 ];
 
 function App() {
@@ -18,7 +21,7 @@ function App() {
   useEffect(() => {
     const language = languages.find(lang => lang.code === targetLanguage);
     if (language) {
-      setCurrentTargetLanguage(language.name);
+      setCurrentTargetLanguage(language.name.toLowerCase());
     }
   }, [targetLanguage]);
 
@@ -43,7 +46,8 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const translation = await translateText(text, sourceLanguage, targetLanguage);
+      const sanitizedText = encodeURIComponent(text);
+      const translation = await translateText(sanitizedText, sourceLanguage, targetLanguage);
       setTranslatedText(translation);
     } catch (error) {
       console.error(error);
@@ -88,11 +92,11 @@ function App() {
       </Form>
       <div className="translation-result">
         <h2>Traduction en {currentTargetLanguage}:</h2>
-        <p>{translatedText}
+        <p>
           <Input
             type="textarea"
             value={translatedText}
-            readOnly
+            disabled
           />
         </p>
       </div>
