@@ -1,23 +1,42 @@
 // App.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { translateText } from './service/translationService.ts';
 import { Container, Form, FormGroup, Input, Button, ButtonGroup } from 'reactstrap';
 
+const languages = [
+  { code: 'en', name: 'Anglais' },
+  { code: 'fr', name: 'Français' },
+];
+
 function App() {
   const [text, setText] = useState('');
-  const [sourceLanguage, setSourceLanguage] = useState('en');
-  const [targetLanguage, setTargetLanguage] = useState('fr');
+  const [sourceLanguage, setSourceLanguage] = useState(languages[0].code);
+  const [targetLanguage, setTargetLanguage] = useState(languages[1].code);
   const [translatedText, setTranslatedText] = useState('');
+  var [currentTargetLanguage, setCurrentTargetLanguage] = useState('');
+
+  useEffect(() => {
+    const language = languages.find(lang => lang.code === targetLanguage);
+    if (language) {
+      setCurrentTargetLanguage(language.name);
+    }
+  }, [targetLanguage]);
 
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
 
   const handleSourceLanguageChange = (language) => {
+    if (language === targetLanguage) {
+      setTargetLanguage(sourceLanguage);
+    }
     setSourceLanguage(language);
   };
 
   const handleTargetLanguageChange = (language) => {
+    if (language === sourceLanguage) {
+      setSourceLanguage(targetLanguage);
+    }
     setTargetLanguage(language);
   };
 
@@ -33,8 +52,8 @@ function App() {
 
   return (
     <Container>
-      <h1>Google Traduction Clone</h1>
-      <Form className="translation-form" onSubmit={handleSubmit}>
+      <h1>AWS Translation</h1>
+      <Form className="translation-form mb-3" onSubmit={handleSubmit}>
         <FormGroup>
           <Input
             type="textarea"
@@ -43,44 +62,41 @@ function App() {
             onChange={handleTextChange}
           />
         </FormGroup>
-        <ButtonGroup>
-          <Button
-            color={sourceLanguage === 'en' ? 'primary' : 'secondary'}
-            onClick={() => handleSourceLanguageChange('en')}
-          >
-            Anglais
-          </Button>
-          <Button
-            color={sourceLanguage === 'fr' ? 'primary' : 'secondary'}
-            onClick={() => handleSourceLanguageChange('fr')}
-          >
-            Français
-          </Button>
-          {/* Ajoutez ici d'autres boutons pour les langues source si nécessaire */}
+        <ButtonGroup className='mr-2'>
+          {languages.map((lang) => (
+            <Button
+              key={lang.code}
+              color={sourceLanguage === lang.code ? 'primary' : 'secondary'}
+              onClick={() => handleSourceLanguageChange(lang.code)}
+            >
+              {lang.name}
+            </Button>
+          ))}
         </ButtonGroup>
-        <ButtonGroup>
-          <Button
-            color={targetLanguage === 'fr' ? 'primary' : 'secondary'}
-            onClick={() => handleTargetLanguageChange('fr')}
-          >
-            Français
-          </Button>
-          <Button
-            color={targetLanguage === 'en' ? 'primary' : 'secondary'}
-            onClick={() => handleTargetLanguageChange('en')}
-          >
-            Anglais
-          </Button>
-          {/* Ajoutez ici d'autres boutons pour les langues cibles si nécessaire */}
+        <ButtonGroup className='mr-2'>
+          {languages.map((lang) => (
+            <Button
+              key={lang.code}
+              color={targetLanguage === lang.code ? 'primary' : 'secondary'}
+              onClick={() => handleTargetLanguageChange(lang.code)}
+            >
+              {lang.name}
+            </Button>
+          ))}
         </ButtonGroup>
         <Button type="submit" color="primary">Traduire</Button>
       </Form>
-      {translatedText && (
-        <div className="translation-result">
-          <h2>Résultat :</h2>
-          <p>{translatedText}</p>
-        </div>
-      )}
+      <div className="translation-result">
+        <h2>Traduction en {currentTargetLanguage}:</h2>
+        <p>{translatedText}
+          <Input
+            type="textarea"
+            value={translatedText}
+            readOnly
+          />
+        </p>
+      </div>
+
     </Container>
   );
 }
