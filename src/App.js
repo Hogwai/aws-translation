@@ -64,6 +64,7 @@ function App() {
             placeholder="Saisissez votre texte..."
             value={text}
             onChange={handleTextChange}
+            required
           />
         </FormGroup>
         <ButtonGroup className='mr-2'>
