@@ -1,8 +1,16 @@
 import { TranslateClient, TranslateTextCommand, TranslateTextCommandInput } from "@aws-sdk/client-translate";
 
+
+const CREDENTIALS = {
+    accessKeyId: process.env.ACCESS_KEY_ID!!,
+    secretAccessKey: process.env.SECRET_ACCESS_KEY!!,
+};
+
 const client = new TranslateClient({
-    region: "us-west-2"
+    region: "eu-west-3",
+    credentials: CREDENTIALS
 });
+
 
 export async function translateText(text: string, sourceLanguage: string, targetLanguage: string): Promise<string> {
     const params: TranslateTextCommandInput = {
