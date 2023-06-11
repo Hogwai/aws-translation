@@ -46,7 +46,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const sanitizedText = encodeURIComponent(text);
+      const sanitizedText = encodeURI(text);
       const translation = await translateText(sanitizedText, sourceLanguage, targetLanguage);
       setTranslatedText(translation);
     } catch (error) {
